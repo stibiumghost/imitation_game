@@ -23,7 +23,7 @@ def find_score(column_name, questions):
 
 def set_score():
     '''Return the score (for the human and for the models)'''
-
+    global questions
     global NUM_QUESTIONS
     score = find_score(answers[0], questions)
     ai_score = {name:find_score(name, questions) for name in answers[1:]}
@@ -31,15 +31,32 @@ def set_score():
     start = '## <p style="text-align: center;">'
     end = '</p>'
 
-    if       score == NUM_QUESTIONS:         text = f'Perfect score!'
+    if score == NUM_QUESTIONS:
+        text = f'Perfect score!'
     else:
-        if   score == 0:                     text = 'Not a single right answer. Are you doing this on purpose?'
-        elif score <= NUM_QUESTIONS / 2 + 1: text = f'Only {score} right answers out of {NUM_QUESTIONS}. You ought to pay more attention.'
-        else:                                text = f'{score} right answers out of {NUM_QUESTIONS}. It\'s probably alright.'
+        if score == 0:
+            text = 'Not a single right answer. Are you doing this on purpose?'
+        elif score <= NUM_QUESTIONS / 2 + 1:
+            text = f'Only {score} right answers out of {NUM_QUESTIONS}. You ought to pay more attention.'
+        else:
+            text = f'{score} right answers out of {NUM_QUESTIONS}. It\'s probably alright.'
+
         for name in ai_score.keys():
             text += f'\n{name} got {ai_score[name]}.'
 
+        # Add a section to display correct/incorrect answers
+        text += "\n\nList of questions with correct answers:\n"
+        i = 0
+        for idx, row in questions.iterrows():
+            i += 1
+            question = row['Question']
+            answer = row['Answer']
+            chosen_answer = row['Choice']
+            status = "✅" if answer == chosen_answer else "❌"
+            text += f"\n\n{status} {i}. {question} (Correct: {answer})\n"
+
     return start + text + end
+
 
 if __name__ == "__main__":
 
