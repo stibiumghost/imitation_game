@@ -23,7 +23,7 @@ def find_score(column_name, questions):
 
 def set_score():
     '''Return the score (for the human and for the models)'''
-
+    global questions
     global NUM_QUESTIONS
     score = find_score(answers[0], questions)
     ai_score = {name:find_score(name, questions) for name in answers[1:]}
