@@ -4,9 +4,12 @@ import pandas as pd
 from text_gen import generate_text
 
 
+NUM_QUESTIONS = 10
+SEPARATOR = '<[._.]>'
+
+
 def get_answer(question, answer, options):
     '''File given answer'''
-
     global questions
     global SEPARATOR
     answer = options.split(SEPARATOR)[answer]
@@ -15,7 +18,6 @@ def get_answer(question, answer, options):
 
 def find_score(column_name, questions):
     '''Count chosen answers in a given column'''
-    #global questions
     actual = questions[column_name].to_list()
     chosen = questions.Choice.to_list()
     return sum(a == c for a, c in zip(actual, chosen))
@@ -59,11 +61,6 @@ def set_score():
 
 
 if __name__ == "__main__":
-
-    NUM_QUESTIONS = 10
-    SEPARATOR = '<[._.]>'
-
-
     # Adding/replacing models may require adjustments to text_gen.py
     model_names = ['microsoft/GODEL-v1_1-large-seq2seq',
                    'facebook/blenderbot-1B-distill',
@@ -90,7 +87,6 @@ if __name__ == "__main__":
 
 
 # Generate answers
-
     for i in range(len(model_names)):
         questions[model_names[i]] = questions.Question.apply(
                                     lambda x: generate_text(
@@ -141,4 +137,3 @@ if __name__ == "__main__":
                 pass
             
     test_gen.launch()
-
